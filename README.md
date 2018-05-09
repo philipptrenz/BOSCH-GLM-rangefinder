@@ -20,3 +20,9 @@ Install `pybluez` for the Python3 interpreter via `pip`:
 ```
 pip3 install pybluez
 ```
+
+## Run the script
+
+```
+python3 glm100c.py
+```
