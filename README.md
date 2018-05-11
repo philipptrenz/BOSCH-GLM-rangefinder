@@ -14,7 +14,7 @@ As the protocol seems to be identical for various Bosch measuring devices this s
 
 ## Dependencies
 
-The script was only tested on Windows. But since the Python module used is multi-platform, it should also support MacOS, Linux and the ARM system of the Raspberry Pi. See [pybluez](https://github.com/pybluez/pybluez) for further information.
+The script was only tested on Windows. But since the Python module used is multi-platform, it should also support Linux and MacOS. See [pybluez](https://github.com/pybluez/pybluez) for further information.
 
 
 Install `pybluez` for the Python3 interpreter via `pip`:
