@@ -40,7 +40,5 @@ rangefinder = GLM100C()
 if not rangefinder.connected: exit(1) 
 
 distance = rangefinder.measure_from_tripod_socket()
-if distance is -1: exit(1)
-
-print(distance, 'mm')
+if distance is not -1: print(distance, 'mm')
 ```
