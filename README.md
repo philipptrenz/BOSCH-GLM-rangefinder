@@ -19,7 +19,7 @@ The script was only tested on Windows. But since the Python module used is multi
 
 Install `pybluez` for the Python3 interpreter via `pip`:
 
-```
+```bash
 pip3 install pybluez
 ```
 
@@ -27,7 +27,7 @@ pip3 install pybluez
 
 ### Use the command line tool
 
-```shell
+```bash
 python3 glm100c.py
 ```
 
