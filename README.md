@@ -8,7 +8,7 @@ As the protocol seems to be identical for various Bosch measuring devices this s
 
 ## Features
 
-* measure, returns a distance in millimeters
+* measure (returns distance millimeters)
 * turn laser on and off
 * turn display backlight on and off
 
@@ -25,6 +25,22 @@ pip3 install pybluez
 
 ## Run the script
 
-```
+### Use the command line tool
+
+```shell
 python3 glm100c.py
+```
+
+### Import into your project
+
+```python
+from glm100c import GLM100C
+
+rangefinder = GLM100C()
+if not rangefinder.connected: exit(1) 
+
+distance = rangefinder.measure_from_tripod_socket()
+if distance is -1: exit(1)
+
+print(distance, 'mm')
 ```
