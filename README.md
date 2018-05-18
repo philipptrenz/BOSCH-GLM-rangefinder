@@ -31,6 +31,8 @@ pip3 install pybluez
 python3 glm100c.py
 ```
 
+Instructions on how to use get printed to the command line.
+
 ### Import into your project
 
 ```python
