@@ -6,16 +6,16 @@ May be adaptable for similar Bluetooth enabled BOSCH measuring devices, like GLM
 
 Author: Philipp Trenz
 """
-
+import os
 import bluetooth # install pybluez
 import struct
+from requests.exceptions import ConnectionError
 
-class GLM100C(object):
+class GLM(object):
     """
-    Bluethooth Connection to laser range finder GLM100C
+    Bluetooth Connection to laser range finder GLMXXXC
     """
     socket = None
-    port = 0x0001
     bluetooth_address = None
     connected = False
 
@@ -44,10 +44,9 @@ class GLM100C(object):
 
     def __init__(self, bluetooth_address=None):
         if bluetooth_address is None:
-            self.find_GLM100C()
+            self.find()
         else:
             self.bluetooth_address = bluetooth_address
-        self.connect()
 
 
     def connect(self):
@@ -55,22 +54,20 @@ class GLM100C(object):
             self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
             self.socket.connect((self.bluetooth_address, self.port))
             self.connected = True
-            #print('BOSCH GLM100C connected')
         except:
             self.socket.close()
-            self.conencted = False
-            #print('Connecting to BOSCH GLM100C failed')
+            self.connected = False
+            raise ConnectionError
 
-    def find_GLM100C(self):
-        print('Searching for BOSCH GLM100C ...')
-
+    def find(self):
+        dev = self.__class__.__name__
+        print('Searching for BOSCH ' + dev)
         nearby_devices = bluetooth.discover_devices(duration=8, lookup_names=True, flush_cache=True, lookup_class=False)
-
         for index, val in enumerate(nearby_devices):
             addr, name = val
-            if 'BOSCH GLM100C' in name.upper():
+            if dev in name.upper():
                 self.bluetooth_address = addr
-                print('Found BOSCH GLM100C @', self.bluetooth_address)
+                print('Found BOSCH ' + dev + ' @', self.bluetooth_address)
                 return
 
     def measure(self):
@@ -146,22 +143,47 @@ class GLM100C(object):
         self.socket.close()
 
 
+class GLM50C(GLM):
+
+    def __init__(self):
+        self.port = 0x0005
+        super().__init__()
+
+class GLM100C(GLM):
+    def __init__(self):
+        self.port = 0x0001
+        super().__init__()
 
 
 if __name__ == "__main__":
 
-    rangefinder = GLM100C()
+    # Add argparse in a future.
+    try:
+        device = GLM100C()
+    except:
+        print('No devices GLM100C found')
+
+    try:
+        device = GLM50C()
+    except:
+        print('No devices GLM50C found')
+        os.sys.exit()
 
     # connecting can be speeded up when the mac address of the device is known, e.g.:
-    # rangefinder = GLM100C(bluetooth_address='54:6C:0E:29:92:2F') 
+    # device = GLM100C(bluetooth_address='54:6C:0E:29:92:2F')
 
+    try:
+        print("Trying to connect with "+ device.__class__.__name__)
+        device.connect()
+    except ConnectionError:
+        print ('Can\'t connect with ' + device.__class__.__name__)
 
     # print('')
-    # rangefinder.find_bluetooth_services()
+    # device.find_bluetooth_services()
     # print('')
 
-    if rangefinder.connected:
-        print('Connected BOSCH GLM100C @', rangefinder.bluetooth_address)
+    if device.connected:
+        print('Connected BOSCH '+ device.__class__.__name__ +'  @', device.bluetooth_address)
 
         try:
             print('\ntype \'m\' to measure, \n\'lon\' or \'loff\' to turn laser on/off, \n\'bon\' or \'boff\' to turn backlight on/off,\n\'x\' to exit\n')
@@ -169,26 +191,26 @@ if __name__ == "__main__":
             while True:
                 data = input()
                 if data == 'm':
-                    distance = rangefinder.measure()
+                    distance = device.measure()
                     if distance > 0:
                         print(distance, 'mm from top of device')
                         print(distance+40.0, 'mm from tripod socket')
                         print(distance+110.0, 'mm from back of device')
                 elif data == 'lon':
-                    rangefinder.turn_laser_on()
+                    device.turn_laser_on()
                 elif data == 'loff':
-                    rangefinder.turn_laser_off()
+                    device.turn_laser_off()
                 elif data == 'bon':
-                    rangefinder.turn_backlight_on()
+                    device.turn_backlight_on()
                 elif data == 'boff':
-                    rangefinder.turn_backlight_off()
+                    device.turn_backlight_off()
                 elif data == 'x':
-                    rangefinder.close()
-                    print('Connection to BOSCH GLM100C closed')
+                    device.close()
+                    print('Connection to BOSCH ' + device.__class__.__name__ + ' closed')
                     break
 
         except KeyboardInterrupt:
-            rangefinder.close()
-            print('Connection to BOSCH GLM100C closed')
+            device.close()
+            print('Connection to '+ device.__class__.__name__+' closed')
     else:
-        print('Could not connect to BOSCH GLM100C')
+        print('Could not connect to '+ device.__class__.__name__ )
