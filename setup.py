@@ -10,5 +10,6 @@ setup(
     url='https://github.com/philipptrenz/BOSCH-GLM-rangefinder',
     install_requires=[
         'PyBluez==0.22',
+        'requests==2.22.0',
     ],
 )
