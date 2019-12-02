@@ -42,12 +42,10 @@ class GLM(object):
         10: 'device not ready',
     }
 
-    def __init__(self, bluetooth_address=None):
-        if bluetooth_address is None:
+    def __init__(self, *args, **kwargs):
+        self.bluetooth_address = kwargs.get("bluetooth_address", None)
+        if self.bluetooth_address is None:
             self.find()
-        else:
-            self.bluetooth_address = bluetooth_address
-
 
     def connect(self):
         try:
@@ -145,14 +143,14 @@ class GLM(object):
 
 class GLM50C(GLM):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.port = 0x0005
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
 class GLM100C(GLM):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.port = 0x0001
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
